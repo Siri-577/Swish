@@ -137,6 +137,45 @@ body {
   text-shadow: 0 1px 2px #000;
 }
 
+.shoot-button-overlay {
+  position: fixed;
+  right: max(28px, env(safe-area-inset-right));
+  bottom: max(28px, env(safe-area-inset-bottom));
+  z-index: 3;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(229, 235, 245, 0.82);
+  border-radius: 50%;
+  color: #f2f5fb;
+  background: rgba(22, 29, 42, 0.88);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  font: 700 16px/1 ui-monospace, Consolas, monospace;
+  letter-spacing: 0.08em;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.shoot-button-overlay.is-pressed {
+  border-color: #c9ffda;
+  background: rgba(48, 126, 78, 0.93);
+  transform: scale(0.94);
+}
+
+.shoot-button-overlay.is-disabled {
+  opacity: 0.48;
+}
+
+@media (pointer: coarse) {
+  .shoot-button-overlay {
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    width: 116px;
+    height: 116px;
+  }
+}
+
 .composition-guide {
   position: fixed;
   top: 50%;

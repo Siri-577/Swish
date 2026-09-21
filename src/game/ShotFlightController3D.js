@@ -2,6 +2,7 @@ import { DEFAULT_SHOT_PROFILE } from '../config/shot-profile-config.js'
 import { SHOT_TIMING_CONFIG } from '../config/shot-timing-config.js'
 import { GameClock } from '../core/GameClock.js'
 import { InputTiming } from '../core/InputTiming.js'
+import { ShotInputController } from '../input/ShotInputController.js'
 import { BallTrajectory3D } from './BallTrajectory3D.js'
 import { getShotMeterTimeline, SHOT_METER_PHASE } from './ShotMeterTimeline.js'
 import { resolveShotMeterRelease, shouldIgnoreKeyboardRelease } from './ShotMeterRelease.js'
@@ -34,6 +35,16 @@ export class ShotFlightController3D {
     this.timingResult = null
     this.outcome = null
     this.meter = new ShotMeterOverlay({ engine, scene, player, profile })
+    this.shotInput = new ShotInputController({
+      inputTiming: this.inputTiming,
+      canPress: () => this.state === 'READY',
+      onPress: () => {
+        this.lockShotParameters()
+        this.state = 'HOLDING'
+      },
+      onRelease: (duration) => this.launch(duration),
+      onCancel: () => this.finishCancel(),
+    })
     this.overlay = document.createElement('aside')
     this.overlay.className = 'shot-debug-overlay'
     document.body.append(this.overlay)
@@ -52,25 +63,34 @@ export class ShotFlightController3D {
   }
 
   handleKeyDown(event) {
-    if (event.code !== 'Space' || this.state !== 'READY') return
+    if (event.code !== 'Space') return
     event.preventDefault()
-    if (this.inputTiming.press()) {
-      this.lockShotParameters()
-      this.state = 'HOLDING'
-      this.refreshUi(GameClock.now())
-    }
+    if (this.beginInput('KEYBOARD')) this.refreshUi(GameClock.now())
   }
 
   handleKeyUp(event) {
     if (event.code !== 'Space' || shouldIgnoreKeyboardRelease(this.state)) return
     event.preventDefault()
-    const heldDuration = this.inputTiming.release()
-    if (heldDuration !== null) this.launch(heldDuration)
+    this.releaseInput('KEYBOARD')
   }
 
   cancel() {
-    if (this.state !== 'HOLDING') return
-    this.inputTiming.reset()
+    this.shotInput.cancel()
+  }
+
+  beginInput(source, pointerId = null) {
+    return this.shotInput.press(source, pointerId)
+  }
+
+  releaseInput(source, pointerId = null) {
+    return this.shotInput.release(source, pointerId)
+  }
+
+  cancelInput(source = null, pointerId = null) {
+    return this.shotInput.cancel(source, pointerId)
+  }
+
+  finishCancel() {
     this.state = 'READY'
     this.meterTimeline = { phase: SHOT_METER_PHASE.IDLE, progress: 0, shouldForceRelease: false }
     this.clearActiveShotParameters()
@@ -102,7 +122,10 @@ export class ShotFlightController3D {
       this.meterTimeline = getShotMeterTimeline(heldDuration, this.activeShotProfile ?? this.profile)
       if (this.meterTimeline.shouldForceRelease) {
         const forcedDuration = this.inputTiming.release()
-        if (forcedDuration !== null) this.launch(forcedDuration, true)
+        if (forcedDuration !== null) {
+          this.shotInput.clearActiveInput()
+          this.launch(forcedDuration, true)
+        }
       } else if (now - this.lastUiUpdate >= 100) {
         this.refreshUi(now)
       }
@@ -162,7 +185,9 @@ export class ShotFlightController3D {
     const greenWindow = getGreenWindow(this.activeShotProfile ?? this.profile)
     const phase = this.meterTimeline.phase
     const visualProgress = (this.meterTimeline.progress * 100).toFixed(1)
-    this.overlay.textContent = `Shot: ${this.state}\n${holding}${result}\nGreen: ${greenWindow.startMs.toFixed(1)} - ${greenWindow.endMs.toFixed(1)} ms\nPhase: ${phase}\nVisual Progress: ${visualProgress}%`
+    const source = this.shotInput.activeInputSource ?? '-'
+    const pointer = this.shotInput.activePointerId ?? '-'
+    this.overlay.textContent = `Shot: ${this.state}\n${holding}${result}\nGreen: ${greenWindow.startMs.toFixed(1)} - ${greenWindow.endMs.toFixed(1)} ms\nPhase: ${phase}\nVisual Progress: ${visualProgress}%\nInput: ${source}\nActive Pointer: ${pointer}`
   }
 
   dispose() {

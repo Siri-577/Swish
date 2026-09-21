@@ -15,7 +15,7 @@ export class ShotInputController {
   press(source, pointerId = null) {
     if ((this.canPress && !this.canPress()) || this.activeInputSource !== null || !this.inputTiming.press()) return false
     this.activeInputSource = source
-    this.activePointerId = source === 'pointer' ? pointerId : null
+    this.activePointerId = pointerId
     if (this.onPress) this.onPress(source)
     return true
   }
@@ -77,7 +77,7 @@ export class ShotInputController {
 
   matchesActiveInput(source, pointerId) {
     return this.activeInputSource === source
-      && (source !== 'pointer' || this.activePointerId === pointerId)
+      && (this.activePointerId === null || this.activePointerId === pointerId)
   }
 
   clearActiveInput() {

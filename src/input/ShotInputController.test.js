@@ -83,3 +83,20 @@ test('blur-equivalent cancel clears an active keyboard source', () => {
   controller.cancel()
   assert.equal(controller.activeInputSource, null)
 })
+
+test('a named shoot button source retains its active pointer identity', () => {
+  const { controller, setTime } = createController()
+  controller.press('SHOOT_BUTTON', 12)
+  setTime(1400)
+  assert.equal(controller.release('SHOOT_BUTTON', 13), null)
+  assert.equal(controller.release('SHOOT_BUTTON', 12), 400)
+})
+
+test('a shoot button source cancels only for its matching pointer', () => {
+  const { controller } = createController()
+  controller.press('SHOOT_BUTTON', 7)
+  assert.equal(controller.cancel('SHOOT_BUTTON', 8), false)
+  assert.equal(controller.activePointerId, 7)
+  assert.equal(controller.cancel('SHOOT_BUTTON', 7), true)
+  assert.equal(controller.activePointerId, null)
+})
