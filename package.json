@@ -1,0 +1,20 @@
+{
+  "name": "swish",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.27.0",
+    "@babylonjs/loaders": "^9.27.0",
+    "phaser": "^4.2.1"
+  }
+}

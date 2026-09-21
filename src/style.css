@@ -1,0 +1,179 @@
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+  background: #111111;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+}
+
+#renderCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.debug-overlay {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  margin: 0;
+  color: #d8dce5;
+  font: 14px/1.45 ui-monospace, Consolas, monospace;
+  white-space: pre-line;
+  pointer-events: none;
+}
+
+.shot-debug-overlay {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  margin: 0;
+  color: #d8dce5;
+  font: 14px/1.45 ui-monospace, Consolas, monospace;
+  text-align: right;
+  white-space: pre-line;
+  pointer-events: none;
+}
+
+.shot-meter-overlay {
+  --green-bottom: 0%;
+  --green-height: 0%;
+  position: fixed;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 54px;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 80ms linear;
+  pointer-events: none;
+}
+
+.shot-meter-overlay.is-active {
+  opacity: 1;
+}
+
+.shot-meter-track {
+  position: relative;
+  width: 16px;
+  height: 172px;
+  overflow: hidden;
+  border: 1px solid rgba(225, 232, 244, 0.8);
+  border-radius: 3px;
+  background: rgba(11, 15, 23, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.shot-meter-fill,
+.shot-meter-green-zone {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.shot-meter-fill {
+  height: 0;
+  z-index: 2;
+  background: linear-gradient(to top, rgba(215, 221, 232, 0.72), rgba(244, 247, 251, 0.72));
+}
+
+.shot-meter-green-zone {
+  bottom: var(--green-bottom);
+  height: var(--green-height);
+  z-index: 1;
+  background: rgba(56, 220, 118, 0.96);
+  border-bottom: 1px solid rgba(215, 255, 226, 0.92);
+}
+
+.shot-meter-overlay.is-green .shot-meter-track {
+  border-color: #a6ffbe;
+  background: #29b85f;
+  box-shadow: 0 0 10px rgba(56, 220, 118, 0.38), inset 0 0 0 1px rgba(0, 62, 24, 0.3);
+}
+
+.shot-meter-overlay.is-green .shot-meter-fill {
+  height: 100% !important;
+  background: #38dc76;
+}
+
+.shot-meter-overlay.is-green .shot-meter-green-zone {
+  background: rgba(216, 255, 227, 0.85);
+}
+
+.shot-meter-overlay.is-green .shot-meter-result {
+  color: #8dffae;
+}
+
+/* On the return pass the top band stays visible, but is explicitly no longer a usable green window. */
+.shot-meter-overlay.is-descending .shot-meter-green-zone {
+  background: rgba(130, 141, 157, 0.9);
+  border-bottom-color: rgba(216, 224, 235, 0.75);
+}
+
+.shot-meter-result {
+  width: max-content;
+  color: #e4e9f2;
+  font: 700 10px/1 ui-monospace, Consolas, monospace;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px #000;
+}
+
+.composition-guide {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.composition-guide::before,
+.composition-guide::after {
+  position: absolute;
+  content: '';
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.composition-guide::before {
+  top: 5px;
+  width: 12px;
+  height: 1px;
+}
+
+.composition-guide::after {
+  left: 5px;
+  width: 1px;
+  height: 12px;
+}
+
+.composition-axis {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
