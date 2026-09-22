@@ -18,7 +18,7 @@ export const HOOP = {
   backboardDepth: 0.05,
   netHeight: 0.42,
   netBottomRadius: 0.13,
-  netStrandCount: 8,
+  netStrandCount: 12,
 }
 
 export const BALL = { radius: 0.12, diameter: 0.24 }

@@ -11,7 +11,7 @@ test('world configuration uses metre-scale basketball dimensions', () => {
 })
 
 test('static net configuration preserves the rim reference dimensions', () => {
-  assert.equal(HOOP.netStrandCount, 8)
+  assert.equal(HOOP.netStrandCount, 12)
   assert.ok(HOOP.netHeight >= 0.35 && HOOP.netHeight <= 0.45)
   assert.equal(HOOP.rimInnerRadius, 0.235)
 })

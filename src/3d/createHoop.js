@@ -1,5 +1,6 @@
 import { Color3, MeshBuilder, StandardMaterial, Vector3 } from '@babylonjs/core'
 import { WORLD_CONFIG } from '../config/world-config.js'
+import { DynamicNetVisual } from '../game/DynamicNetVisual.js'
 
 export function createHoop(scene) {
   const { x, y, z, rimInnerRadius, rimTubeRadius, backboardWidth, backboardHeight, backboardDepth, netHeight, netBottomRadius, netStrandCount } = WORLD_CONFIG.hoop
@@ -19,15 +20,15 @@ export function createHoop(scene) {
   const supportMaterial = new StandardMaterial('support-material', scene)
   supportMaterial.diffuseColor = new Color3(0.18, 0.18, 0.2)
   support.material = supportMaterial
-  const netLines = []
-  for (let index = 0; index < netStrandCount; index += 1) {
-    const angle = (index / netStrandCount) * Math.PI * 2
-    const top = new Vector3(x + Math.cos(angle) * rimInnerRadius, y - rimTubeRadius, z + Math.sin(angle) * rimInnerRadius)
-    const bottom = new Vector3(x + Math.cos(angle) * netBottomRadius, y - netHeight, z + Math.sin(angle) * netBottomRadius)
-    netLines.push([top, bottom])
-  }
-  const net = MeshBuilder.CreateLineSystem('basketball-net', { lines: netLines }, scene)
-  net.color = new Color3(0.9, 0.92, 0.95)
+  const netVisual = new DynamicNetVisual({
+    scene,
+    hoopCenter: new Vector3(x, y, z),
+    rimInnerRadius,
+    rimTubeRadius,
+    netHeight,
+    netBottomRadius,
+    strandCount: netStrandCount,
+  })
   return {
     rimCenter: new Vector3(x, y, z),
     rimRadius: rimInnerRadius,
@@ -36,6 +37,7 @@ export function createHoop(scene) {
     backboardPosition: board.position.clone(),
     rim,
     backboard: board,
-    net,
+    net: netVisual.mesh,
+    netVisual,
   }
 }

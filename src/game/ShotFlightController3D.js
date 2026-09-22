@@ -324,6 +324,13 @@ export class ShotFlightController3D {
       this.refreshUi(now)
     }
 
+    if (this.state === 'NET_CAPTURE') {
+      this.hoop.netVisual?.updateBallInteraction(this.ball.position, this.ballBody.getLinearVelocity(), this.physics.ballRadius)
+    } else {
+      this.hoop.netVisual?.stopBallInteraction()
+    }
+    this.hoop.netVisual?.update(this.scene.getEngine().getDeltaTime() / 1000)
+
     this.meter.update({
       state: this.state,
       timeline: this.meterTimeline,
@@ -653,6 +660,7 @@ export class ShotFlightController3D {
       entryOffsetZ: this.ball.position.z - this.hoop.rimCenter.z,
       makeType: this.captureType,
     }
+    this.hoop.netVisual?.onBallEnter(this.shotResult.netImpactData)
     // All shots retained normal rim collision until this proven, safe entry.
     // Disabling it now prevents lower/side rim nodes from ejecting a ball that
     // is already inside the net channel.
@@ -853,5 +861,6 @@ export class ShotFlightController3D {
     if (this.beforePhysicsObserver) this.scene.onBeforePhysicsObservable.remove(this.beforePhysicsObserver)
     this.overlay.remove()
     this.meter.dispose()
+    this.hoop.netVisual?.dispose()
   }
 }
