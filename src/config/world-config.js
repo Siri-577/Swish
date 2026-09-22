@@ -23,6 +23,20 @@ export const HOOP = {
 
 export const BALL = { radius: 0.12, diameter: 0.24 }
 
+export const SHOT_PHYSICS = {
+  gravity: 9.81,
+  ballMassKg: 0.62,
+  ballRestitution: 0.62,
+  ballFriction: 0.42,
+  rimRestitution: 0.58,
+  rimFriction: 0.3,
+  floorRestitution: 0.48,
+  floorFriction: 0.72,
+  rimColliderCount: 16,
+  // Deliberately small: these are the physical tube nodes, not visual meshes.
+  rimColliderRadius: 0.021,
+}
+
 export const PLAYER = {
   height: 1.82,
   bodyHeight: 1.58,
@@ -30,7 +44,8 @@ export const PLAYER = {
   headDiameter: 0.24,
   x: 0.2,
   y: 0,
-  z: -4,
+  // Places the default release point at NBA top-of-key three-point distance.
+  z: -1.62,
 }
 
 export const WORLD_CONFIG = {
@@ -38,5 +53,6 @@ export const WORLD_CONFIG = {
   court: COURT,
   hoop: HOOP,
   ball: BALL,
+  shotPhysics: SHOT_PHYSICS,
   player: PLAYER,
 }

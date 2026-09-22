@@ -1,0 +1,50 @@
+export function createShotResultRecord(outcome) {
+  return {
+    shotId: null,
+    timingGrade: null,
+    timingError: outcome.timingError,
+    horizontalError: outcome.horizontalError,
+    depthError: outcome.depthError,
+    arcError: outcome.arcError,
+    launchAngleVariationDegrees: outcome.launchAngleVariationDegrees ?? 0,
+    isGreen: outcome.isGreen,
+    firstRimContact: 'NONE',
+    rimContactCount: 0,
+    hitBackboard: false,
+    made: false,
+    finalResult: null,
+    targetPosition: outcome.targetPosition,
+    launchVelocity: null,
+    flightDurationMs: null,
+    apexHeight: null,
+    rimArrivalVelocity: null,
+    launchAngleDegrees: null,
+    entryAngleDegrees: null,
+    shotDistanceMeters: null,
+    releaseHeight: null,
+    uncompressedFlightDurationMs: null,
+    shotTimeCompression: null,
+    effectiveShotGravity: null,
+    uncompressedRimArrivalVelocity: null,
+    actualRimArrivalMs: null,
+    makeType: null,
+    netCaptureEntryVelocity: null,
+    netCaptureExitVelocity: null,
+    hoopEntry: false,
+    hoopExit: false,
+    safeEntryRadius: null,
+    entryPosition: null,
+    netImpactData: null,
+    rimPlaneCrossing: null,
+    crossDistance: null,
+    passRadius: null,
+    swishPrediction: null,
+    commitHeightAboveRim: null,
+    rimContactsBeforeCommit: null,
+  }
+}
+
+export function recordRimContact(result, region) {
+  result.rimContactCount += 1
+  if (result.firstRimContact === 'NONE') result.firstRimContact = region
+}

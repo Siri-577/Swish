@@ -8,9 +8,9 @@ import './style.css'
 
 const canvas = document.querySelector('#renderCanvas')
 const engine = createEngine(canvas)
-const { scene, hoop, ball, player, shotSpot } = createScene(engine, canvas)
+const { scene, hoop, ball, player, shotSpot, physics } = await createScene(engine, canvas)
 const performanceMonitor = new BabylonPerformanceMonitor(engine, scene)
-const shotController = new ShotFlightController3D({ ball, hoop, spot: shotSpot, engine, scene, player, shootingProfile: PAUL_GEORGE_PROTOTYPE_SHOOTING_PROFILE })
+const shotController = new ShotFlightController3D({ ball, hoop, spot: shotSpot, engine, scene, player, physics, shootingProfile: PAUL_GEORGE_PROTOTYPE_SHOOTING_PROFILE })
 const shootButton = new ShootButtonOverlay({
   onPress: (source, pointerId) => shotController.beginInput(source, pointerId),
   onRelease: (source, pointerId) => shotController.releaseInput(source, pointerId),

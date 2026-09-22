@@ -28,5 +28,14 @@ export function createHoop(scene) {
   }
   const net = MeshBuilder.CreateLineSystem('basketball-net', { lines: netLines }, scene)
   net.color = new Color3(0.9, 0.92, 0.95)
-  return { rimCenter: new Vector3(x, y, z), rimRadius: rimInnerRadius, rimHeight: y, backboardPosition: board.position.clone(), net }
+  return {
+    rimCenter: new Vector3(x, y, z),
+    rimRadius: rimInnerRadius,
+    rimHeight: y,
+    netHeight,
+    backboardPosition: board.position.clone(),
+    rim,
+    backboard: board,
+    net,
+  }
 }
